@@ -2,15 +2,7 @@
 
 import { role } from "@/lib/data";
 import { useRouter } from "next/navigation"; // Cambia la importación aquí
-import {
-  Home,
-  User,
-  Settings,
-  LogOut,
-  CreditCard,
-  Backpack,
-  PiggyBank,
-} from "lucide-react"; // Importa los iconos necesarios
+import { Home, User, Settings, LogOut, CreditCard } from "lucide-react"; // Importa los iconos necesarios
 import Link from "next/link";
 
 const menuItems = [
@@ -31,20 +23,8 @@ const menuItems = [
       },
       {
         icon: CreditCard, // Icono para "Pagos"
-        label: "Pagos",
-        href: "/payment",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-      {
-        icon: Backpack, // Icono para "Materias"
-        label: "Materias",
-        href: "/list/subjects",
-        visible: ["admin", "teacher"],
-      },
-      {
-        icon: PiggyBank, // Icono para "Ayudas financieras"
-        label: "Ayudas financieras",
-        href: "/financialaid",
+        label: "Matricula",
+        href: "/enrollment",
         visible: ["admin", "teacher", "student", "parent"],
       },
     ],

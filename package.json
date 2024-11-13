@@ -18,9 +18,9 @@
     "react-big-calendar": "^1.15.0",
     "react-calendar": "^5.1.0",
     "react-dom": "19.0.0-rc-02c0e824-20241028",
-    "react-hook-form": "^7.53.1",
+    "react-hook-form": "^7.53.2",
     "react-toastify": "^10.0.6",
-    "recharts": "^2.13.1",
+    "recharts": "^2.13.3",
     "zod": "^3.23.8"
   },
   "devDependencies": {
