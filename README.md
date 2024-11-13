@@ -1,8 +1,16 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Campus Sync Frontend App
 
-## Getting Started
+## Descripción
 
-First, run the development server:
+Esta aplicación web está diseñada para el registro de matrícula financiera de los estudiantes de un campus universitario. El frontend simula las transacciones que se realizarían en un sistema de gestión de matrícula, interactuando con un backend desarrollado en Spring Boot que está desplegado localmente. A través de esta aplicación, los usuarios pueden realizar solicitudes a los endpoints del backend para gestionar la información relacionada con la matrícula, incluyendo el registro de pagos, consultas y actualizaciones de datos. La interfaz es intuitiva y está optimizada para facilitar la experiencia del usuario en el proceso de matrícula financiera.
+
+![logo](https://github.com/user-attachments/assets/c7a63ec5-ef81-4ae6-8b66-14286551c307)
+
+## Empezando
+
+![next](https://github.com/user-attachments/assets/8e048253-2eff-4c64-b85b-7a66ef0cccc7)
+
+Primero, ejecute el servidor de desarrollo:
 
 ```bash
 npm run dev
@@ -14,23 +22,20 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abra [http://localhost:3000](http://localhost:3000) con su navegador para ver el resultado.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Requisitos de Instalación
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Al ejecutar el comando `npm install`, puede que encuentres problemas relacionados con la instalación de ciertos paquetes debido a incompatibilidades de versiones de React. En particular, los siguientes paquetes son necesarios para el funcionamiento del proyecto, pero no se instalaron correctamente:
 
-## Learn More
+- `react-calendar`
+- `recharts`
 
-To learn more about Next.js, take a look at the following resources:
+Para instalar estos paquetes, es necesario utilizar la opción `--legacy-peer-deps` para evitar conflictos de versiones. Puedes hacerlo ejecutando los siguientes comandos:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm install react-calendar --legacy-peer-deps
+npm install recharts --legacy-peer-deps
+npm install @hookform/resolvers react-hook-form zod --legacy-peer-deps
+npm install react-big-calendar --legacy-peer-deps
+```
