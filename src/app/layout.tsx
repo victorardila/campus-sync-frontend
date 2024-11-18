@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { AuthProvider } from "../context/AuthContext";
-import { PaymentProvider } from "../context/PaymentContext"; // Asegúrate de importar PaymentProvider
+import { EnrollmentProvider } from "../context/EnrollmentContext";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -19,14 +19,14 @@ export default function RootLayout({
 }>) {
   return (
     <AuthProvider>
-      <PaymentProvider>
+      <EnrollmentProvider>
         <html lang="en">
           <head>
             <link rel="icon" href="/assets/icon/favicon.ico" />
           </head>
           <body className={inter.className}>{children}</body>
         </html>
-      </PaymentProvider>
+      </EnrollmentProvider>
     </AuthProvider>
   );
 }

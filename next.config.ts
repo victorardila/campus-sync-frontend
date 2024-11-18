@@ -5,27 +5,27 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/students/:path*',
-        destination: 'http://192.168.1.135:8080/students/:path*', // Proxy a tu servidor
+        destination: 'http://localhost:8080/students/:path*', // Proxy a tu servidor
       },
       {
         source: '/api/enrollment/:path*',
-        destination: 'http://192.168.1.135:8080/api/enrollment/:path*', // Proxy a tu servidor
+        destination: 'http://localhost:8080/api/enrollment/:path*', // Proxy a tu servidor
       },
       {
         source: '/api/courses/:path*',
-        destination: 'http://192.168.1.135:8080/api/courses/:path*', // Proxy a tu servidor
+        destination: 'http://localhost:8080/api/courses/:path*', // Proxy a tu servidor
       },
       {
         source: '/api/scholarship/:path*',
-        destination: 'http://192.168.1.135:8080/api/scholarship/:path*', // Proxy a tu servidor
+        destination: 'http://localhost:8080/api/scholarship/:path*', // Proxy a tu servidor
       },
       {
         source: '/api/invoices/:path*',
-        destination: 'http://192.168.1.135:8080/api/invoices/:path*', // Proxy a tu servidor
+        destination: 'http://localhost:8080/api/invoices/:path*', // Proxy a tu servidor
       },
       {
         source: '/api/payments/:path*',
-        destination: 'http://192.168.1.135:8080/api/payments/:path*', // Proxy a tu servidor
+        destination: 'http://localhost:8080/api/payments/:path*', // Proxy a tu servidor
       },
       {
         source: '/img/:path*',  // Para imágenes
