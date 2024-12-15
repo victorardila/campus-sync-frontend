@@ -1,18 +1,16 @@
 "use client"; // Asegúrate de que esta línea esté aquí
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Receipt, ChevronLeft, ChevronRight } from "lucide-react";
-import { useEnrollment } from "@/hooks/useEnrollment"; // Importa el hook
-
-interface Course {
-  id: string;
-  name: string;
-  credits: number;
-}
+import { Invoice } from "@/models/Invoice";
+import { Course } from "../models/Course";
+import { Scholarship } from "@/models/Scholarship";
+import { Student } from "@/models/Student"; // Asegúrate de importar el modelo Student
 
 interface InvoiceGenerationProps {
-  selectedCourses: Course[];
-  onNext: (invoice: any) => void;
+  selectedCourses: Course[]; // Recibe los cursos seleccionados
+  scholarships: Scholarship[]; // Recibe las becas seleccionadas
+  onNext: (invoice: Invoice) => void;
   onBack: () => void;
 }
 
@@ -20,10 +18,18 @@ const CREDIT_COST = 150000; // Costo por crédito en pesos
 
 const InvoiceGeneration: React.FC<InvoiceGenerationProps> = ({
   selectedCourses,
+  scholarships,
   onNext,
   onBack,
 }) => {
-  const { selectedScholarship } = useEnrollment(); // Obtén la beca seleccionada del contexto
+  const [currentStudent, setCurrentStudent] = useState<Student | null>(null); // Estado para el estudiante
+
+  useEffect(() => {
+    const studentData = localStorage.getItem("user");
+    if (studentData) {
+      setCurrentStudent(JSON.parse(studentData)); // Parsear el JSON y establecer el estado
+    }
+  }, []);
 
   const calculateSubtotal = () => {
     return selectedCourses.reduce((total, course) => {
@@ -35,9 +41,10 @@ const InvoiceGeneration: React.FC<InvoiceGenerationProps> = ({
     let discount = 0;
     let discountType = "";
 
-    if (selectedScholarship) {
-      discount = selectedScholarship.discount / 100; // Convertir el porcentaje a decimal
-      discountType = selectedScholarship.name; // Nombre de la beca
+    if (scholarships.length > 0) {
+      const appliedScholarship = scholarships[0]; // Ejemplo: tomar la primera beca
+      discount = appliedScholarship.discount / 100; // Convertir el porcentaje a decimal
+      discountType = appliedScholarship.name; // Nombre de la beca
     }
 
     return { amount: subtotal * discount, type: discountType };
@@ -48,15 +55,21 @@ const InvoiceGeneration: React.FC<InvoiceGenerationProps> = ({
   const total = subtotal - discount;
 
   const handleNext = () => {
-    const invoice = {
+    if (!currentStudent) {
+      console.error("No hay estudiante disponible");
+      return;
+    }
+
+    const invoice: Invoice = {
       subtotal,
       discount,
       total,
       courses: selectedCourses,
-      scholarship: selectedScholarship,
+      scholarship: scholarships[0],
       date: new Date().toISOString(),
+      student: currentStudent,
     };
-    onNext(invoice);
+    onNext(invoice); // Aquí se llama a onNext con el objeto invoice
   };
 
   return (
@@ -113,7 +126,7 @@ const InvoiceGeneration: React.FC<InvoiceGenerationProps> = ({
             </div>
           </div>
 
-          {selectedScholarship && (
+          {scholarships.length > 0 && (
             <div>
               <h4 className="text-sm font-medium text-gray-900 mb-3">
                 Beca Aplicada
@@ -121,11 +134,11 @@ const InvoiceGeneration: React.FC<InvoiceGenerationProps> = ({
               <div className="bg-white p-4 rounded-lg">
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">
-                    {selectedScholarship.name.charAt(0).toUpperCase() +
-                      selectedScholarship.name.slice(1)}
+                    {scholarships[0].name.charAt(0).toUpperCase() +
+                      scholarships[0].name.slice(1)}
                   </span>
                   <span className="text-gray-900 font-medium">
-                    {selectedScholarship.discount}%
+                    {scholarships[0].discount}%
                   </span>
                 </div>
               </div>

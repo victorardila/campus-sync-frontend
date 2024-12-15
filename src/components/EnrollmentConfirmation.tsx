@@ -1,8 +1,15 @@
 import React from "react";
 import { CheckCircle, ChevronLeft } from "lucide-react";
+import { Course } from "@/models/Course";
+import { Invoice } from "@/models/Invoice";
 
+interface EnrollmentData {
+  selectedCourses: Course[];
+  scholarships: string[];
+  invoice: Invoice;
+}
 interface EnrollmentConfirmationProps {
-  enrollmentData: any;
+  enrollmentData: EnrollmentData;
   onBack: () => void;
 }
 
@@ -31,7 +38,7 @@ const EnrollmentConfirmation: React.FC<EnrollmentConfirmationProps> = ({
             Cursos Inscritos
           </h3>
           <div className="space-y-2">
-            {enrollmentData.selectedCourses.map((course: any) => (
+            {enrollmentData.selectedCourses.map((course: Course) => (
               <div
                 key={course.id}
                 className="flex justify-between items-center bg-white p-4 rounded-lg"

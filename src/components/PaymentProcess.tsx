@@ -1,10 +1,12 @@
 import React, { useState } from "react";
-import { CreditCard, ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEnrollment } from "@/hooks/useEnrollment"; // Importa el hook
+import { Invoice } from "@/models/Invoice";
+import { Payment } from "@/models/Payment";
 
 interface PaymentProcessProps {
-  invoice: any;
-  onNext: (payment: any) => void;
+  invoice: Invoice;
+  onNext: (payment: Payment) => void;
   onBack: () => void;
 }
 
@@ -29,20 +31,25 @@ const PaymentProcess: React.FC<PaymentProcessProps> = ({
     try {
       // 1. Generar la factura
       const invoiceRequestDTO = {
-        student: { id: invoice.studentId, name: invoice.studentName },
+        student: invoice.student,
         courses: invoice.courses,
         scholarship: invoice.scholarship,
         amount: invoice.total,
       };
+      console.log("Solicitando factura:", invoiceRequestDTO);
       const generatedInvoice = await generateInvoice(invoiceRequestDTO);
+      console.log("Factura generada:", generatedInvoice);
 
       // 2. Procesar el pago
-      const payment = {
-        method: paymentMethod,
-        amount: invoice.total,
-        date: new Date().toISOString(),
+      const payment: Payment = {
+        id: 0, // O asigna un ID válido si es necesario
+        paymentMethod: paymentMethod, // Asegúrate de que esto coincida con el tipo
+        number: cardNumber, // Número de tarjeta
+        cvv: cvv, // CVV
+        expirationDate: `${expiryDate}/01`, // Formato correcto
+        paymentDate: new Date().toISOString(), // Fecha de pago
         status: "completed",
-        transactionId: "trans_" + Date.now(), // Genera un ID ficticio
+        transactionId: "trans_" + Date.now(), // ID ficticio
       };
       await processPayment(payment);
 

@@ -14,14 +14,9 @@ import ScholarshipApplication from "../../../components/ScholarshipApplication";
 import InvoiceGeneration from "../../../components/InvoiceGeneration";
 import PaymentProcess from "../../../components/PaymentProcess";
 import EnrollmentConfirmation from "../../../components/EnrollmentConfirmation";
-
-// types.ts
-type Course = {
-  id: string;
-  name: string;
-  credits: number;
-  // ... otras propiedades del curso
-};
+import { Course } from "@/models/Course"; // Cambia aquí
+import { Scholarship } from "@/models/Scholarship"; // Cambia aquí
+import { Invoice } from "@/models/Invoice";
 
 export type Step = {
   id: number;
@@ -65,9 +60,15 @@ const steps: Step[] = [
 
 const Enrollment = () => {
   const [currentStep, setCurrentStep] = useState(1);
-  const [enrollmentData, setEnrollmentData] = useState({
-    selectedCourses: [] as Course[],
-    scholarships: [] as string[],
+  const [enrollmentData, setEnrollmentData] = useState<{
+    selectedCourses: Course[];
+    selectedScholarships: Scholarship[];
+    invoice: Invoice | null; // Cambia aquí
+    payment: null;
+    confirmation: null;
+  }>({
+    selectedCourses: [],
+    selectedScholarships: [],
     invoice: null,
     payment: null,
     confirmation: null,
@@ -78,11 +79,8 @@ const Enrollment = () => {
       case 1:
         return (
           <CourseSelection
-            onNext={(courses) => {
-              setEnrollmentData((prev) => ({
-                ...prev,
-                selectedCourses: courses,
-              }));
+            onNext={(selectedCourses) => {
+              setEnrollmentData((prev) => ({ ...prev, selectedCourses }));
               setCurrentStep(2);
             }}
           />
@@ -90,8 +88,11 @@ const Enrollment = () => {
       case 2:
         return (
           <ScholarshipApplication
-            onNext={(scholarships) => {
-              setEnrollmentData((prev) => ({ ...prev, scholarships }));
+            onNext={(selectedScholarships) => {
+              setEnrollmentData((prev) => ({
+                ...prev,
+                selectedScholarships, // Asegúrate de que sea un array de objetos Scholarship
+              }));
               setCurrentStep(3);
             }}
             onBack={() => setCurrentStep(1)}
@@ -100,8 +101,8 @@ const Enrollment = () => {
       case 3:
         return (
           <InvoiceGeneration
-            selectedCourses={enrollmentData.selectedCourses}
-            scholarships={enrollmentData.scholarships}
+            selectedCourses={enrollmentData.selectedCourses} // Asegúrate de pasar esto
+            scholarships={enrollmentData.selectedScholarships} // Asegúrate de pasar esto
             onNext={(invoice) => {
               setEnrollmentData((prev) => ({ ...prev, invoice }));
               setCurrentStep(4);

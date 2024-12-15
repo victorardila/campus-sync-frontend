@@ -3,18 +3,11 @@
 import React, { useEffect, useState } from "react";
 import { GraduationCap, ChevronLeft, ChevronRight } from "lucide-react";
 import { useEnrollment } from "@/hooks/useEnrollment"; // Importa el hook
-
-interface Scholarship {
-  id: number;
-  name: string;
-  description: string;
-  discount: number;
-  requirements: string[];
-}
+import { Scholarship } from "@/models/Scholarship"; // Asegúrate de importar el modelo Scholarship
 
 interface ScholarshipApplicationProps {
-  onNext: () => void; // Cambia a void
-  onBack: () => void; // Asegúrate de que esta propiedad esté definida
+  onNext: (scholarships: Scholarship[]) => void; // Asegúrate de que el tipo sea correcto
+  onBack: () => void;
 }
 
 const ScholarshipApplication: React.FC<ScholarshipApplicationProps> = ({
@@ -40,7 +33,7 @@ const ScholarshipApplication: React.FC<ScholarshipApplicationProps> = ({
   const handleNext = () => {
     if (selectedScholarship) {
       updateSelectedScholarship(selectedScholarship); // Almacena la beca seleccionada en el contexto
-      onNext(); // Llama a la función onNext para continuar
+      onNext([selectedScholarship]); // Cambia aquí para pasar el objeto completo
     }
   };
 

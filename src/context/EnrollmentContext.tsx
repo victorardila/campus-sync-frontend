@@ -3,15 +3,23 @@
 import React, { createContext, useState } from "react";
 
 // Definición de tipo para Course
-interface Course {
+type Course = {
   id: number;
   code: string;
   name: string;
   credits: number;
   teacher: string;
   currentQuantity: number;
-  maximumLimit: number;
+  maxQuantity: number;
   schedule: string;
+};
+
+// Definición de tipo para Invoice
+interface Invoice {
+  id: number;
+  invoiceDate: string;
+  discount: number;
+  amount: number;
 }
 
 // Definición de tipo para Scholarship
@@ -35,17 +43,19 @@ interface InvoiceRequestDTO {
     name: string;
   };
   courses: Course[];
-  scholarship: Scholarship | null;
-  amount: number; // Agregado el campo amount
+  scholarship: Scholarship;
 }
 
 // Define el tipo para Payment
 interface Payment {
-  method: string;
-  amount: number;
-  date: string;
+  id: number;
+  paymentMethod: string; // Asegúrate de que esta propiedad esté correctamente nombrada
+  number: string; // Número de tarjeta
+  cvv: string; // CVV
+  expirationDate: string; // Fecha de expiración
+  paymentDate: string; // Fecha de pago
   status: string;
-  transactionId: string; // Asegúrate de que este campo esté presente
+  transactionId: string; // ID de transacción
 }
 
 // Define el tipo para el contexto de inscripción
@@ -58,7 +68,7 @@ interface EnrollmentContextType {
   fetchCourses: () => Promise<void>;
   fetchScholarships: () => Promise<void>;
   updateSelectedScholarship: (scholarship: Scholarship | null) => void;
-  generateInvoice: (invoiceRequestDTO: InvoiceRequestDTO) => Promise<any>;
+  generateInvoice: (invoiceRequestDTO: InvoiceRequestDTO) => Promise<Invoice>;
   processPayment: (payment: Payment) => Promise<string>;
   confirmEnrollment: () => Promise<string>;
 }

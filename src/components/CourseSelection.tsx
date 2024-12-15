@@ -1,17 +1,7 @@
 import React, { useState } from "react";
 import { BookOpen, Clock, Users, ChevronRight } from "lucide-react";
 import { useEnrollment } from "@/hooks/useEnrollment"; // Importa el hook
-
-interface Course {
-  id: number;
-  code: string;
-  name: string;
-  credits: number;
-  teacher: string;
-  currentQuantity: number;
-  maximumLimit: number;
-  schedule: string;
-}
+import { Course } from "@/models/Course"; // Asegúrate de importar el modelo Course
 
 interface CourseSelectionProps {
   onNext: (courses: Course[]) => void;
@@ -81,7 +71,7 @@ const CourseSelection: React.FC<CourseSelectionProps> = ({ onNext }) => {
                 </div>
                 <div className="flex items-center text-sm text-gray-600">
                   <Users className="w-4 h-4 mr-2" />
-                  {course.name}/{course.maximumLimit} estudiantes
+                  {course.name}/{course.maxQuantity} estudiantes
                 </div>
               </div>
             </div>
