@@ -2,12 +2,17 @@ import React from "react";
 import { CheckCircle, ChevronLeft } from "lucide-react";
 import { Course } from "@/models/Course";
 import { Invoice } from "@/models/Invoice";
+import { Payment } from "@/models/Payment";
+import { Scholarship } from "@/models/Scholarship";
 
 interface EnrollmentData {
   selectedCourses: Course[];
-  scholarships: string[];
+  selectedScholarships: Scholarship[];
   invoice: Invoice;
+  payment: Payment | null;
+  confirmation: null;
 }
+
 interface EnrollmentConfirmationProps {
   enrollmentData: EnrollmentData;
   onBack: () => void;
@@ -54,20 +59,22 @@ const EnrollmentConfirmation: React.FC<EnrollmentConfirmationProps> = ({
           </div>
         </div>
 
-        {Array.isArray(enrollmentData.scholarships) &&
-          enrollmentData.scholarships.length > 0 && (
+        {Array.isArray(enrollmentData.selectedScholarships) &&
+          enrollmentData.selectedScholarships.length > 0 && (
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-3">
                 Becas Aplicadas
               </h3>
               <div className="bg-white p-4 rounded-lg">
                 <ul className="space-y-2">
-                  {enrollmentData.scholarships.map((scholarship: string) => (
-                    <li key={scholarship} className="text-gray-600">
-                      {scholarship.charAt(0).toUpperCase() +
-                        scholarship.slice(1)}
-                    </li>
-                  ))}
+                  {enrollmentData.selectedScholarships.map(
+                    (scholarship: Scholarship) => (
+                      <li key={scholarship.id} className="text-gray-600">
+                        {scholarship.name.charAt(0).toUpperCase() +
+                          scholarship.name.slice(1)}
+                      </li>
+                    )
+                  )}
                 </ul>
               </div>
             </div>

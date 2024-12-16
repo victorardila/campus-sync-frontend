@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEnrollment } from "@/hooks/useEnrollment"; // Importa el hook
 import { Invoice } from "@/models/Invoice";
 import { Payment } from "@/models/Payment";
+import { Student } from "@/models/Student"; // Asegúrate de importar el modelo Student
 
 interface PaymentProcessProps {
   invoice: Invoice;
@@ -15,6 +16,7 @@ const PaymentProcess: React.FC<PaymentProcessProps> = ({
   onNext,
   onBack,
 }) => {
+  const [currentStudent, setCurrentStudent] = useState<Student | null>(null); // Estado para el estudiante
   const [paymentMethod, setPaymentMethod] = useState("credit");
   const [cardNumber, setCardNumber] = useState("");
   const [expiryDate, setExpiryDate] = useState("");
@@ -23,6 +25,14 @@ const PaymentProcess: React.FC<PaymentProcessProps> = ({
   const [loading, setLoading] = useState(false);
   const { generateInvoice, processPayment, confirmEnrollment } =
     useEnrollment();
+
+  useEffect(() => {
+    // Cargar datos del estudiante desde localStorage
+    const studentData = localStorage.getItem("user");
+    if (studentData) {
+      setCurrentStudent(JSON.parse(studentData)); // Parsear el JSON y establecer el estado
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,25 +44,54 @@ const PaymentProcess: React.FC<PaymentProcessProps> = ({
         student: invoice.student,
         courses: invoice.courses,
         scholarship: invoice.scholarship,
-        amount: invoice.total,
       };
-      console.log("Solicitando factura:", invoiceRequestDTO);
-      const generatedInvoice = await generateInvoice(invoiceRequestDTO);
-      console.log("Factura generada:", generatedInvoice);
+
+      // Llamar a la función de generación de factura
+      await generateInvoice(invoiceRequestDTO);
+
+      // Validar la fecha de expiración
+      const [month, year] = expiryDate.split("/");
+      const expirationDate = new Date(
+        Number(`20${year}`),
+        Number(month) - 1,
+        1
+      ); // Ajustar para el primer día del mes
+      const currentDate = new Date();
+
+      if (expirationDate < currentDate) {
+        alert(
+          "La fecha de expiración no puede ser anterior a la fecha actual."
+        );
+        setLoading(false);
+        return;
+      }
 
       // 2. Procesar el pago
       const payment: Payment = {
         id: 0, // O asigna un ID válido si es necesario
         paymentMethod: paymentMethod, // Asegúrate de que esto coincida con el tipo
         number: cardNumber, // Número de tarjeta
+        amount: invoice.total, // Monto
         cvv: cvv, // CVV
-        expirationDate: `${expiryDate}/01`, // Formato correcto
+        expirationDate: expirationDate.toISOString(), // Fecha de expiración
         paymentDate: new Date().toISOString(), // Fecha de pago
         status: "completed",
         transactionId: "trans_" + Date.now(), // ID ficticio
       };
-      await processPayment(payment);
-
+      if (currentStudent) {
+        const paymentResponse = await processPayment(
+          payment,
+          currentStudent.id
+        );
+        alert(paymentResponse); // Muestra el mensaje de éxito
+      } else {
+        console.error("Error: No se encontró información del estudiante.");
+        alert(
+          "No se encontró información del estudiante. Por favor, recargue la página."
+        );
+        setLoading(false);
+        return;
+      }
       // 3. Confirmar la inscripción
       await confirmEnrollment();
 

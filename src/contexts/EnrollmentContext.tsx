@@ -52,6 +52,7 @@ interface Payment {
   paymentMethod: string; // Asegúrate de que esta propiedad esté correctamente nombrada
   number: string; // Número de tarjeta
   cvv: string; // CVV
+  amount: number; // Monto
   expirationDate: string; // Fecha de expiración
   paymentDate: string; // Fecha de pago
   status: string;
@@ -68,8 +69,9 @@ interface EnrollmentContextType {
   fetchCourses: () => Promise<void>;
   fetchScholarships: () => Promise<void>;
   updateSelectedScholarship: (scholarship: Scholarship | null) => void;
+  getCreditCost: () => Promise<number>;
   generateInvoice: (invoiceRequestDTO: InvoiceRequestDTO) => Promise<Invoice>;
-  processPayment: (payment: Payment) => Promise<string>;
+  processPayment: (payment: Payment, studentId: number) => Promise<string>;
   confirmEnrollment: () => Promise<string>;
 }
 
@@ -129,9 +131,27 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
     setSelectedScholarship(scholarship);
   };
 
+  // peticion a la URI /api/enrollment/credit-cost QUE NO RECIBE NADA y retorna el valor de creditos
+  const getCreditCost = async () => {
+    try {
+      const response = await fetch("/api/enrollment/credit-cost");
+      if (!response.ok) {
+        throw new Error("Error al obtener el costo de los créditos");
+      }
+      const data = await response.json();
+      return data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error("Ocurrió un error desconocido");
+      }
+    }
+  };
+
   const generateInvoice = async (invoiceRequestDTO: InvoiceRequestDTO) => {
     try {
-      const response = await fetch("/api/enrollment/generateInvoice", {
+      const response = await fetch("/api/enrollment/generate-invoice", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -142,7 +162,6 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
         throw new Error("Error al generar la factura");
       }
       const data = await response.json();
-      console.log(data);
       return data; // Retorna la factura generada
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -153,20 +172,19 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  const processPayment = async (payment: Payment) => {
+  const processPayment = async (payment: Payment, studentId: number) => {
     try {
-      const response = await fetch("/api/enrollment/processPayment", {
+      const response = await fetch("/api/enrollment/process-payment", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payment),
+        body: JSON.stringify({ payment, studentId }), // Envía ambos parámetros en el body
       });
       if (!response.ok) {
         throw new Error("Error al procesar el pago");
       }
-      const data = await response.text(); // Puedes cambiar esto si esperas un objeto
-      console.log(data);
+      const data = await response.text(); // Si esperas un texto
       return data; // Retorna el mensaje de éxito
     } catch (error: unknown) {
       if (error instanceof Error) {
@@ -179,7 +197,7 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const confirmEnrollment = async () => {
     try {
-      const response = await fetch("/api/enrollment/confirmEnrollment");
+      const response = await fetch("/api/enrollment/confirm-enrollment");
       if (!response.ok) {
         throw new Error("Error al confirmar la matrícula");
       }
@@ -206,6 +224,7 @@ export const EnrollmentProvider: React.FC<{ children: React.ReactNode }> = ({
         fetchCourses,
         fetchScholarships,
         updateSelectedScholarship,
+        getCreditCost,
         generateInvoice,
         processPayment,
         confirmEnrollment,

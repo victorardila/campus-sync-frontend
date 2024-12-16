@@ -17,6 +17,7 @@ import EnrollmentConfirmation from "../../../components/EnrollmentConfirmation";
 import { Course } from "@/models/Course"; // Cambia aquí
 import { Scholarship } from "@/models/Scholarship"; // Cambia aquí
 import { Invoice } from "@/models/Invoice";
+import { Payment } from "@/models/Payment";
 
 export type Step = {
   id: number;
@@ -63,14 +64,38 @@ const Enrollment = () => {
   const [enrollmentData, setEnrollmentData] = useState<{
     selectedCourses: Course[];
     selectedScholarships: Scholarship[];
-    invoice: Invoice | null; // Cambia aquí
-    payment: null;
+    invoice: Invoice; // Mantén esto como Invoice
+    payment: Payment | null;
     confirmation: null;
   }>({
     selectedCourses: [],
     selectedScholarships: [],
-    invoice: null,
-    payment: null,
+    invoice: {
+      student: {
+        id: 0,
+        name: "",
+        academicProgram: "",
+        tipoDescuento: "",
+        saldoPagar: 0,
+        creditosAcumulados: 0,
+        username: "",
+        password: "",
+        money: 0,
+      },
+      courses: [],
+      scholarship: {
+        id: 0,
+        name: "",
+        description: "",
+        requirements: [],
+        discount: 0,
+      },
+      date: new Date().toISOString(),
+      subtotal: 0,
+      discount: 0,
+      total: 0,
+    },
+    payment: null as Payment | null,
     confirmation: null,
   });
 
@@ -113,7 +138,7 @@ const Enrollment = () => {
       case 4:
         return (
           <PaymentProcess
-            invoice={enrollmentData.invoice}
+            invoice={enrollmentData.invoice} // Asegúrate de pasar esto
             onNext={(payment) => {
               setEnrollmentData((prev) => ({ ...prev, payment }));
               setCurrentStep(5);
